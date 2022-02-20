@@ -158,6 +158,13 @@ false.
 true.
 ```
 
+## Installation
+
+To install this package write the bellow term in swipl terminal.
+
+```prolog
+?- pack_install(peg_syntax).
+```
 
 ## TODO
 
