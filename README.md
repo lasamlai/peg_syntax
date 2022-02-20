@@ -160,7 +160,7 @@ true.
 
 ## Installation
 
-To install this package write the bellow term in swipl terminal.
+To install this package write the bellow term in the swipl REPL.
 
 ```prolog
 ?- pack_install(peg_syntax).
