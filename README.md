@@ -99,7 +99,7 @@ T = [].
 If you want to have a different aggregator, add it by `{}` as below.
 
 #### Program
-```
+```prolog
 :- use_module(library(peg_syntax)).
 
 pars(P) <-- ((a(A)/ b(B)), {P = pair(A, B)})* .
