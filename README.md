@@ -11,6 +11,8 @@ This package adds new operators:
 |    700     | `xf`  |  `?`  | Zero-or-more   |
 |    700     | `xf`  |  `*`  | One-or-more    |
 |    700     | `xf`  |  `+`  | Optional       |
+|    700     | `fx`  |  `&`  | And-predicate  |
+|    700     | `fx`  |  `!`  | Not-predicate  |
 
 ## Examples
 
@@ -158,6 +160,34 @@ false.
 true.
 ```
 
+### Example 7
+
+Expressions inside the `&` and `!` operators never consumes any input.
+
+#### Program
+
+```prolog
+:- use_module(library(peg_syntax)).
+
+diff_list(X) <-- (& (char(A), !char(A)), char(X))* .
+
+char(A) <-- [C], {char_code(A, C)}.
+```
+
+**Note**: The space between the `&` and `(` characters is necessary! 
+
+#### Execution
+
+```prolog
+?- phrase(diff_list(X), `ababa`, T).
+X = [a, b, a, b, a],
+T = [].
+
+?- phrase(diff_list(X), `ababba`, T).
+X = [a, b, a],
+T = [98, 98, 97].
+```
+
 ## Installation
 
 To install this package write the bellow term in the swipl REPL.
@@ -166,14 +196,6 @@ To install this package write the bellow term in the swipl REPL.
 ?- pack_install(peg_syntax).
 ```
 
-## TODO
-
- - [ ] Add operators:
-
-    | Precedence | Type | Name | Description   |
-    |:----------:|:----:|:----:|:------------- |
-    |    700     | `fx` | `&`  | And-predicate |
-    |    700     | `fx` | `!`  | Not-predicate |
 
 [PEG]: https://en.wikipedia.org/wiki/Parsing_expression_grammar
 [`term_expansion/2`]: https://www.swi-prolog.org/pldoc/doc_for?object=term_expansion/2
