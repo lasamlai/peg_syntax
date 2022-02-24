@@ -36,6 +36,10 @@ peg_expansion(Name, (& A), And, M0, M1, Out) :-
     !,
     and_expansion(Name, A, And, M0, M1, Out).
 
+peg_expansion(Name, (! A), Not, M0, M1, Out) :-
+    !,
+    not_expansion(Name, A, Not, M0, M1, Out).
+
 peg_expansion(Name, (A / B), (ABody, !; BBody), M0, M2, Head-Tail1) :-
     !,
     peg_expansion(Name, A, ABody, M0, M1, Head-Tail0),
@@ -45,6 +49,22 @@ peg_expansion(_, Body, Body, M, M, X-X).
 
 
 and_expansion(Name, A, And, M0, M3, [(AndHead :- ExpresionIgnore),
+                                     (ExpresionHead --> ExpresionBody)|Tail0]-Tail1):-
+    !,
+    atomic_concat(Name, M0, NAnd),
+    succ(M0, M1),
+    atomic_concat(Name, M1, NExpresion),
+    succ(M1, M2),
+    term_variables(A, Vars),
+    append(Vars, [X,X], Arguments),
+    append(Vars, [X,_], CallArgs),
+    And =.. [NAnd|Vars],
+    AndHead =.. [NAnd|Arguments],
+    ExpresionIgnore =.. [NExpresion|CallArgs],
+    ExpresionHead =.. [NExpresion|Vars],
+    peg_expansion(Name, A, ExpresionBody, M2, M3, Tail0-Tail1).
+
+not_expansion(Name, A, And, M0, M3, [(AndHead :- \+ ExpresionIgnore),
                                      (ExpresionHead --> ExpresionBody)|Tail0]-Tail1):-
     !,
     atomic_concat(Name, M0, NAnd),

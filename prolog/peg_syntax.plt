@@ -176,3 +176,45 @@ test(get_c, (C, T) =@= (c,`xxc`)) :-
     phrase(min_3(C), `xxc`, T).
 
 :- end_tests(and_arg).
+
+:- begin_tests(not).
+
+not(C) <-- !("a" / "b"), !bc, char(C).
+
+bc <-- "b" / "c".
+
+char(A) <-- [C], {char_code(A, C)}.
+
+test(not_a, fail) :-
+    phrase(not(_), `a`, _).
+
+test(not_b, fail) :-
+    phrase(not(_), `b`, _).
+
+test(not_c, fail) :-
+    phrase(not(_), `c`, _).
+
+test(not_e, (E,T) =@= (e, [])) :-
+    phrase(not(E), `e`, T).
+
+:- end_tests(not).
+
+:- begin_tests(not_arg).
+
+diff(A, B) <-- char(A), !char(A), char(B).
+
+char(A) <-- [C], {char_code(A, C)}.
+
+test(to_small0, fail) :-
+    phrase(diff(_, _), ``, _).
+
+test(to_small1, fail) :-
+    phrase(diff(_, _), `x`, _).
+
+test(same, fail) :-
+    phrase(diff(_, _), `xx`, _).
+
+test(diff, (A, B, T) =@= (a, b, [])) :-
+    phrase(diff(A, B), `ab`, T).
+
+:- end_tests(not_arg).
