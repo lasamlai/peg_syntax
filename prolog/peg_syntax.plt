@@ -8,8 +8,14 @@ a <-- "a".
 b <-- "b".
 c <-- "c".
 
+test(ab, fail) :-
+    phrase(abc, `ab`, []).
+
 test(abc) :-
     phrase(abc, `abc`, []).
+
+test(axc, fail) :-
+    phrase(abc, `axc`, []).
 
 :- end_tests(simple).
 
@@ -125,3 +131,48 @@ test(good) :-
     phrase(good, `bbbbbb`, _).
 
 :- end_tests(greedy).
+
+:- begin_tests(and).
+
+and(C) <-- &("a" / "b"), &bc, char(C).
+
+bc <-- "b" / "c".
+
+char(A) <-- [C], {char_code(A, C)}.
+
+test(not_a, fail) :-
+    phrase(and(_), `a`, _).
+
+test(ok_b, (C,T) =@= (b, [])) :-
+    phrase(and(C), `b`, T).
+
+test(not_c, fail) :-
+    phrase(and(_), `c`, _).
+
+test(not_e, fail) :-
+    phrase(and(_), `e`, _).
+
+:- end_tests(and).
+
+:- begin_tests(and_arg).
+
+min_3(A) <-- & ([_,_], char(A)).
+
+char(A) <-- [C], {char_code(A, C)}.
+
+test(to_small0, fail) :-
+    phrase(min_3(_), ``, _).
+
+test(to_small1, fail) :-
+    phrase(min_3(_), `x`, _).
+
+test(to_small2, fail) :-
+    phrase(min_3(_), `xx`, _).
+
+test(get_a, (C, T) =@= (a,`xxa`)) :-
+    phrase(min_3(C), `xxa`, T).
+
+test(get_c, (C, T) =@= (c,`xxc`)) :-
+    phrase(min_3(C), `xxc`, T).
+
+:- end_tests(and_arg).
